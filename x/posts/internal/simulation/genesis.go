@@ -6,6 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/desmos-labs/desmos/x/posts/internal/types"
+	types2 "github.com/desmos-labs/desmos/x/reactions/internal/types"
 	"github.com/tendermint/tendermint/crypto/ed25519"
 )
 
@@ -52,16 +53,16 @@ func randomPosts(simState *module.SimulationState) (posts types.Posts) {
 }
 
 // randomReactions returns a randomly generated list of reactions
-func randomReactions(simState *module.SimulationState, posts types.Posts) (reactionsMap map[string]types.Reactions) {
+func randomReactions(simState *module.SimulationState, posts types.Posts) (reactionsMap map[string]types2.Reactions) {
 	reactionsNumber := simState.Rand.Intn(len(posts))
 
-	reactionsMap = make(map[string]types.Reactions, reactionsNumber)
+	reactionsMap = make(map[string]types2.Reactions, reactionsNumber)
 	for i := 0; i < reactionsNumber; i++ {
 		reactionsLen := simState.Rand.Intn(20)
-		reactions := make(types.Reactions, reactionsLen)
+		reactions := make(types2.Reactions, reactionsLen)
 		for j := 0; j < reactionsLen; j++ {
 			privKey := ed25519.GenPrivKey().PubKey()
-			reactions[j] = types.NewReaction(RandomReactionValue(simState.Rand), sdk.AccAddress(privKey.Address()))
+			reactions[j] = types2.NewReaction(RandomReactionValue(simState.Rand), sdk.AccAddress(privKey.Address()))
 		}
 
 		reactionsMap[RandomPostID(simState.Rand, posts).String()] = reactions

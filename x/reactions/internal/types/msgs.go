@@ -2,10 +2,10 @@ package types
 
 import (
 	"fmt"
-	"strings"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/desmos-labs/desmos/x/posts"
+	"strings"
 )
 
 // ----------------------
@@ -14,13 +14,13 @@ import (
 
 // MsgAddPostReaction defines the message to be used to add a reaction to a post
 type MsgAddPostReaction struct {
-	PostID PostID         `json:"post_id"` // Id of the post to react to
-	Value  string         `json:"value"`   // Reaction of the reaction
+	PostID posts.PostID   `json:"post_id"` // Id of the post to react to
+	Value  string         `json:"value"`   // PostReaction of the reaction
 	User   sdk.AccAddress `json:"user"`    // Address of the user reacting to the post
 }
 
 // NewMsgAddPostReaction is a constructor function for MsgAddPostReaction
-func NewMsgAddPostReaction(postID PostID, value string, user sdk.AccAddress) MsgAddPostReaction {
+func NewMsgAddPostReaction(postID posts.PostID, value string, user sdk.AccAddress) MsgAddPostReaction {
 	return MsgAddPostReaction{
 		PostID: postID,
 		User:   user,
@@ -45,7 +45,7 @@ func (msg MsgAddPostReaction) ValidateBasic() error {
 	}
 
 	if len(strings.TrimSpace(msg.Value)) == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("Reaction value cannot be empty nor blank"))
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("PostReaction value cannot be empty nor blank"))
 	}
 
 	return nil
@@ -68,13 +68,13 @@ func (msg MsgAddPostReaction) GetSigners() []sdk.AccAddress {
 // MsgRemovePostReaction defines the message to be used when wanting to remove
 // an existing reaction from a specific user having a specific value
 type MsgRemovePostReaction struct {
-	PostID   PostID         `json:"post_id"`  // Id of the post to unlike
+	PostID   posts.PostID   `json:"post_id"`  // Id of the post to unlike
 	User     sdk.AccAddress `json:"user"`     // Address of the user that has previously liked the post
-	Reaction string         `json:"reaction"` // Reaction of the reaction to be removed
+	Reaction string         `json:"reaction"` // PostReaction of the reaction to be removed
 }
 
 // MsgUnlikePostPost is the constructor of MsgRemovePostReaction
-func NewMsgRemovePostReaction(postID PostID, user sdk.AccAddress, reaction string) MsgRemovePostReaction {
+func NewMsgRemovePostReaction(postID posts.PostID, user sdk.AccAddress, reaction string) MsgRemovePostReaction {
 	return MsgRemovePostReaction{
 		PostID:   postID,
 		User:     user,
@@ -99,7 +99,7 @@ func (msg MsgRemovePostReaction) ValidateBasic() error {
 	}
 
 	if len(strings.TrimSpace(msg.Reaction)) == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Reaction value cannot be empty nor blank")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "PostReaction value cannot be empty nor blank")
 	}
 
 	return nil

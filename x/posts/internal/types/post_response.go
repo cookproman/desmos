@@ -3,6 +3,7 @@ package types
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/desmos-labs/desmos/x/reactions"
 	"strings"
 )
 
@@ -10,24 +11,24 @@ import (
 // that is returned to user upon a query
 type PostQueryResponse struct {
 	Post
-	PollAnswers []UserAnswer `json:"poll_answers,omitempty"`
-	Reactions   Reactions    `json:"reactions"`
-	Children    PostIDs      `json:"children"`
+	PollAnswers   []UserAnswer            `json:"poll_answers,omitempty"`
+	PostReactions reactions.PostReactions `json:"reactions"`
+	Children      PostIDs                 `json:"children"`
 }
 
 // String implements fmt.Stringer
 func (response PostQueryResponse) String() string {
-	out := "ID - [Reactions] [Children] \n"
-	out += fmt.Sprintf("%s - [%s] [%s] \n", response.Post.PostID, response.Reactions, response.Children)
+	out := "ID - [PostReactions] [Children] \n"
+	out += fmt.Sprintf("%s - [%s] [%s] \n", response.Post.PostID, response.PostReactions, response.Children)
 	return strings.TrimSpace(out)
 }
 
-func NewPostResponse(post Post, pollAnswers []UserAnswer, reactions Reactions, children PostIDs) PostQueryResponse {
+func NewPostResponse(post Post, pollAnswers []UserAnswer, reactions reactions.PostReactions, children PostIDs) PostQueryResponse {
 	return PostQueryResponse{
-		Post:        post,
-		PollAnswers: pollAnswers,
-		Reactions:   reactions,
-		Children:    children,
+		Post:          post,
+		PollAnswers:   pollAnswers,
+		PostReactions: reactions,
+		Children:      children,
 	}
 }
 

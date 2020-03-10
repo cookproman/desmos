@@ -13,11 +13,9 @@ const (
 	MaxOptionalDataFieldsNumber     = 10
 	MaxOptionalDataFieldValueLength = 200
 
-	ActionCreatePost         = "create_post"
-	ActionEditPost           = "edit_post"
-	ActionAnswerPoll         = "answer_poll"
-	ActionAddPostReaction    = "add_post_reaction"
-	ActionRemovePostReaction = "remove_post_reaction"
+	ActionCreatePost = "create_post"
+	ActionEditPost   = "edit_post"
+	ActionAnswerPoll = "answer_poll"
 
 	// Queries
 	QuerierRoute     = ModuleName
@@ -46,12 +44,6 @@ func PostStoreKey(id PostID) []byte {
 // nolint: interfacer
 func PostCommentsStoreKey(id PostID) []byte {
 	return append(PostCommentsStorePrefix, []byte(id.String())...)
-}
-
-// PostCommentsStoreKey turns an id to a key used to store a post's reactions into the posts store
-// nolint: interfacer
-func PostReactionsStoreKey(id PostID) []byte {
-	return append(PostReactionsStorePrefix, []byte(id.String())...)
 }
 
 // PollAnswersStoreKey turns an id to a key used to store a post's poll answers into the posts store

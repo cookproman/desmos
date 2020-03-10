@@ -1,18 +1,19 @@
-package types_test
+package types
 
 import (
-	"testing"
-
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/desmos-labs/desmos/x/posts/internal/types"
+	"github.com/desmos-labs/desmos/x/posts"
+	"github.com/desmos-labs/desmos/x/reactions/internal/types"
 	"github.com/stretchr/testify/require"
+
+	"testing"
 )
 
 // ----------------------
 // --- MsgAddPostReaction
 // ----------------------
 
-var msgLike = types.NewMsgAddPostReaction(types.PostID(94), "like", testOwner)
+var msgLike = types.NewMsgAddPostReaction(posts.PostID(94), "like", testOwner)
 
 func TestMsgAddPostReaction_Route(t *testing.T) {
 	actual := msgLike.Route()
@@ -32,22 +33,22 @@ func TestMsgAddPostReaction_ValidateBasic(t *testing.T) {
 	}{
 		{
 			name:  "Invalid post id returns error",
-			msg:   types.NewMsgAddPostReaction(types.PostID(0), "like", testOwner),
+			msg:   types.NewMsgAddPostReaction(posts.PostID(0), "like", testOwner),
 			error: sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Invalid post id"),
 		},
 		{
 			name:  "Invalid user returns error",
-			msg:   types.NewMsgAddPostReaction(types.PostID(5), "like", nil),
+			msg:   types.NewMsgAddPostReaction(posts.PostID(5), "like", nil),
 			error: sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "Invalid user address: "),
 		},
 		{
 			name:  "Invalid value returns error",
-			msg:   types.NewMsgAddPostReaction(types.PostID(5), "", testOwner),
-			error: sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Reaction value cannot be empty nor blank"),
+			msg:   types.NewMsgAddPostReaction(posts.PostID(5), "", testOwner),
+			error: sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "PostReaction value cannot be empty nor blank"),
 		},
 		{
 			name:  "Valid message returns no error",
-			msg:   types.NewMsgAddPostReaction(types.PostID(10), "like", testOwner),
+			msg:   types.NewMsgAddPostReaction(posts.PostID(10), "like", testOwner),
 			error: nil,
 		},
 	}
@@ -80,7 +81,7 @@ func TestMsgAddPostReaction_GetSigners(t *testing.T) {
 // --- MsgRemovePostReaction
 // ----------------------
 
-var msgUnlikePost = types.NewMsgRemovePostReaction(types.PostID(94), testOwner, "like")
+var msgUnlikePost = types.NewMsgRemovePostReaction(posts.PostID(94), testOwner, "like")
 
 func TestMsgUnlikePost_Route(t *testing.T) {
 	actual := msgUnlikePost.Route()
@@ -100,22 +101,22 @@ func TestMsgUnlikePost_ValidateBasic(t *testing.T) {
 	}{
 		{
 			name:  "Invalid post id returns error",
-			msg:   types.NewMsgRemovePostReaction(types.PostID(0), testOwner, "like"),
+			msg:   types.NewMsgRemovePostReaction(posts.PostID(0), testOwner, "like"),
 			error: sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Invalid post id"),
 		},
 		{
 			name:  "Invalid user address: ",
-			msg:   types.NewMsgRemovePostReaction(types.PostID(10), nil, "like"),
+			msg:   types.NewMsgRemovePostReaction(posts.PostID(10), nil, "like"),
 			error: sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "Invalid user address: "),
 		},
 		{
 			name:  "Invalid value returns no error",
-			msg:   types.NewMsgRemovePostReaction(types.PostID(10), testOwner, ""),
-			error: sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Reaction value cannot be empty nor blank"),
+			msg:   types.NewMsgRemovePostReaction(posts.PostID(10), testOwner, ""),
+			error: sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "PostReaction value cannot be empty nor blank"),
 		},
 		{
 			name:  "Valid message returns no error",
-			msg:   types.NewMsgRemovePostReaction(types.PostID(10), testOwner, "like"),
+			msg:   types.NewMsgRemovePostReaction(posts.PostID(10), testOwner, "like"),
 			error: nil,
 		},
 	}

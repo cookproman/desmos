@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	types2 "github.com/desmos-labs/desmos/x/reactions/internal/types"
 	"testing"
 
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -25,7 +26,7 @@ func Test_queryPost(t *testing.T) {
 		name            string
 		path            []string
 		storedPosts     types.Posts
-		storedReactions map[types.PostID]types.Reactions
+		storedReactions map[types.PostID]types2.Reactions
 		storedAnswers   []types.UserAnswer
 		expResult       types.PostQueryResponse
 		expError        error
@@ -51,7 +52,7 @@ func Test_queryPost(t *testing.T) {
 			expResult: types.NewPostResponse(
 				types.NewPost(types.PostID(1), types.PostID(0), "Parent", false, "", map[string]string{}, testPost.Created, creator).WithMedias(testPost.Medias).WithPollData(*testPost.PollData),
 				[]types.UserAnswer{types.NewUserAnswer(answers, creator)},
-				types.Reactions{},
+				types2.Reactions{},
 				types.PostIDs{types.PostID(2)},
 			),
 		},
@@ -65,7 +66,7 @@ func Test_queryPost(t *testing.T) {
 			expResult: types.NewPostResponse(
 				types.NewPost(types.PostID(1), types.PostID(0), "Parent", false, "", map[string]string{}, testPost.Created, creator).WithMedias(testPost.Medias).WithPollData(*testPost.PollData),
 				[]types.UserAnswer{types.NewUserAnswer(answers, creator)},
-				types.Reactions{},
+				types2.Reactions{},
 				types.PostIDs{},
 			),
 		},
@@ -76,19 +77,19 @@ func Test_queryPost(t *testing.T) {
 				types.NewPost(types.PostID(2), types.PostID(1), "Child", false, "", map[string]string{}, testPost.Created, creator),
 			},
 			storedAnswers: []types.UserAnswer{types.NewUserAnswer(answers, creator)},
-			storedReactions: map[types.PostID]types.Reactions{
+			storedReactions: map[types.PostID]types2.Reactions{
 				types.PostID(1): {
-					types.NewReaction("Like", creator),
-					types.NewReaction("Like", otherCreator),
+					types2.NewReaction("Like", creator),
+					types2.NewReaction("Like", otherCreator),
 				},
 			},
 			path: []string{types.QueryPost, "1"},
 			expResult: types.NewPostResponse(
 				types.NewPost(types.PostID(1), types.PostID(0), "Parent", false, "", map[string]string{}, testPost.Created, creator).WithPollData(*testPost.PollData),
 				[]types.UserAnswer{types.NewUserAnswer(answers, creator)},
-				types.Reactions{
-					types.NewReaction("Like", creator),
-					types.NewReaction("Like", otherCreator),
+				types2.Reactions{
+					types2.NewReaction("Like", creator),
+					types2.NewReaction("Like", otherCreator),
 				},
 				types.PostIDs{types.PostID(2)},
 			),
@@ -99,19 +100,19 @@ func Test_queryPost(t *testing.T) {
 				types.NewPost(types.PostID(1), types.PostID(0), "Parent", false, "", map[string]string{}, testPost.Created, creator).WithMedias(testPost.Medias),
 				types.NewPost(types.PostID(2), types.PostID(1), "Child", false, "", map[string]string{}, testPost.Created, creator).WithMedias(testPost.Medias),
 			},
-			storedReactions: map[types.PostID]types.Reactions{
+			storedReactions: map[types.PostID]types2.Reactions{
 				types.PostID(1): {
-					types.NewReaction("Like", creator),
-					types.NewReaction("Like", otherCreator),
+					types2.NewReaction("Like", creator),
+					types2.NewReaction("Like", otherCreator),
 				},
 			},
 			path: []string{types.QueryPost, "1"},
 			expResult: types.NewPostResponse(
 				types.NewPost(types.PostID(1), types.PostID(0), "Parent", false, "", map[string]string{}, testPost.Created, creator).WithMedias(testPost.Medias),
 				nil,
-				types.Reactions{
-					types.NewReaction("Like", creator),
-					types.NewReaction("Like", otherCreator),
+				types2.Reactions{
+					types2.NewReaction("Like", creator),
+					types2.NewReaction("Like", otherCreator),
 				},
 				types.PostIDs{types.PostID(2)},
 			),
@@ -122,10 +123,10 @@ func Test_queryPost(t *testing.T) {
 				types.NewPost(types.PostID(1), types.PostID(0), "Parent", false, "", map[string]string{}, testPost.Created, creator).WithMedias(testPost.Medias).WithPollData(*testPost.PollData),
 				types.NewPost(types.PostID(2), types.PostID(1), "Child", false, "", map[string]string{}, testPost.Created, creator).WithMedias(testPost.Medias),
 			},
-			storedReactions: map[types.PostID]types.Reactions{
+			storedReactions: map[types.PostID]types2.Reactions{
 				types.PostID(1): {
-					types.NewReaction("Like", creator),
-					types.NewReaction("Like", otherCreator),
+					types2.NewReaction("Like", creator),
+					types2.NewReaction("Like", otherCreator),
 				},
 			},
 			storedAnswers: []types.UserAnswer{types.NewUserAnswer(answers, creator)},
@@ -133,9 +134,9 @@ func Test_queryPost(t *testing.T) {
 			expResult: types.NewPostResponse(
 				types.NewPost(types.PostID(1), types.PostID(0), "Parent", false, "", map[string]string{}, testPost.Created, creator).WithMedias(testPost.Medias).WithPollData(*testPost.PollData),
 				[]types.UserAnswer{types.NewUserAnswer(answers, creator)},
-				types.Reactions{
-					types.NewReaction("Like", creator),
-					types.NewReaction("Like", otherCreator),
+				types2.Reactions{
+					types2.NewReaction("Like", creator),
+					types2.NewReaction("Like", otherCreator),
 				},
 				types.PostIDs{types.PostID(2)},
 			),
@@ -206,13 +207,13 @@ func Test_queryPosts(t *testing.T) {
 				types.NewPostResponse(
 					types.NewPost(types.PostID(1), types.PostID(0), "Parent", false, "", map[string]string{}, testPost.Created, creator).WithMedias(testPost.Medias).WithPollData(*testPost.PollData),
 					[]types.UserAnswer{types.NewUserAnswer(answers, creator)},
-					types.Reactions{},
+					types2.Reactions{},
 					types.PostIDs{types.PostID(2)},
 				),
 				types.NewPostResponse(
 					types.NewPost(types.PostID(2), types.PostID(1), "Child", false, "", map[string]string{}, testPost.Created, creator).WithMedias(testPost.Medias),
 					nil,
-					types.Reactions{},
+					types2.Reactions{},
 					types.PostIDs{},
 				),
 			},
@@ -228,7 +229,7 @@ func Test_queryPosts(t *testing.T) {
 				types.NewPostResponse(
 					types.NewPost(types.PostID(2), types.PostID(1), "Child", false, "", map[string]string{}, testPost.Created, creator).WithPollData(*testPost.PollData),
 					[]types.UserAnswer{types.NewUserAnswer(answers, creator)},
-					types.Reactions{},
+					types2.Reactions{},
 					types.PostIDs{},
 				),
 			},
@@ -244,7 +245,7 @@ func Test_queryPosts(t *testing.T) {
 				types.NewPostResponse(
 					types.NewPost(types.PostID(1), types.PostID(0), "Parent", false, "", map[string]string{}, testPost.Created, creator).WithMedias(testPost.Medias),
 					nil,
-					types.Reactions{},
+					types2.Reactions{},
 					types.PostIDs{types.PostID(2)},
 				),
 			},
@@ -261,7 +262,7 @@ func Test_queryPosts(t *testing.T) {
 				types.NewPostResponse(
 					types.NewPost(types.PostID(1), types.PostID(0), "Parent", false, "", map[string]string{}, testPost.Created, creator).WithMedias(testPost.Medias).WithPollData(*testPost.PollData),
 					[]types.UserAnswer{types.NewUserAnswer(answers, creator)},
-					types.Reactions{},
+					types2.Reactions{},
 					types.PostIDs{types.PostID(2)},
 				),
 			},

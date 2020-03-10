@@ -2,6 +2,7 @@ package simulation
 
 import (
 	"fmt"
+	types2 "github.com/desmos-labs/desmos/x/reactions/internal/types"
 	"testing"
 	"time"
 
@@ -57,9 +58,9 @@ func TestDecodeStore(t *testing.T) {
 
 	lastPostID := types.PostID(1)
 	comments := types.PostIDs{types.PostID(10), types.PostID(14), types.PostID(20)}
-	reactions := types.Reactions{
-		types.NewReaction("like", postCreatorAddr),
-		types.NewReaction("💙", postCreatorAddr),
+	reactions := types2.Reactions{
+		types2.NewReaction("like", postCreatorAddr),
+		types2.NewReaction("💙", postCreatorAddr),
 	}
 
 	kvPairs := kv.Pairs{
@@ -76,7 +77,7 @@ func TestDecodeStore(t *testing.T) {
 		{"LastPostID", fmt.Sprintf("LastPostIDA: %s\nLastPostIDB: %s\n", lastPostID, lastPostID)},
 		{"Post", fmt.Sprintf("PostA: %s\nPostB: %s\n", testPost, testPost)},
 		{"Comments", fmt.Sprintf("CommentsA: %s\nCommentsB: %s\n", comments, comments)},
-		{"Reactions", fmt.Sprintf("ReactionsA: %s\nReactionsB: %s\n", reactions, reactions)},
+		{"PostReactions", fmt.Sprintf("ReactionsA: %s\nReactionsB: %s\n", reactions, reactions)},
 		{"other", ""},
 	}
 

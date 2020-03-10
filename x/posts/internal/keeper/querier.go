@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"fmt"
+	types2 "github.com/desmos-labs/desmos/x/reactions/internal/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -37,7 +38,7 @@ func getPostResponse(ctx sdk.Context, keeper Keeper, post types.Post) types.Post
 	// Get the likes
 	postLikes := keeper.GetPostReactions(ctx, post.PostID)
 	if postLikes == nil {
-		postLikes = types.Reactions{}
+		postLikes = types2.Reactions{}
 	}
 
 	// Get the children

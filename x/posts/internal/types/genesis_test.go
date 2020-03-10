@@ -1,6 +1,7 @@
 package types_test
 
 import (
+	types2 "github.com/desmos-labs/desmos/x/reactions/internal/types"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -27,7 +28,7 @@ func TestValidateGenesis(t *testing.T) {
 			name: "Genesis with invalid post errors",
 			genesis: types.GenesisState{
 				Posts:     types.Posts{types.Post{PostID: types.PostID(0)}},
-				Reactions: map[string]types.Reactions{},
+				Reactions: map[string]types2.Reactions{},
 			},
 			shouldError: true,
 		},
@@ -35,8 +36,8 @@ func TestValidateGenesis(t *testing.T) {
 			name: "Genesis with invalid reaction errors",
 			genesis: types.GenesisState{
 				Posts: types.Posts{},
-				Reactions: map[string]types.Reactions{
-					"1": {types.Reaction{Owner: nil}},
+				Reactions: map[string]types2.Reactions{
+					"1": {types2.PostReaction{Owner: nil}},
 				},
 			},
 			shouldError: true,
@@ -50,7 +51,7 @@ func TestValidateGenesis(t *testing.T) {
 						types.NewUserAnswer([]types.AnswerID{}, user),
 					},
 				},
-				Reactions: map[string]types.Reactions{},
+				Reactions: map[string]types2.Reactions{},
 			},
 			shouldError: true,
 		},

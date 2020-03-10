@@ -18,10 +18,6 @@ func NewHandler(keeper Keeper) sdk.Handler {
 			return handleMsgCreatePost(ctx, keeper, msg)
 		case types.MsgEditPost:
 			return handleMsgEditPost(ctx, keeper, msg)
-		case types.MsgAddPostReaction:
-			return handleMsgAddPostReaction(ctx, keeper, msg)
-		case types.MsgRemovePostReaction:
-			return handleMsgRemovePostReaction(ctx, keeper, msg)
 		case types.MsgAnswerPoll:
 			return handleMsgAnswerPollPost(ctx, keeper, msg)
 		default:
@@ -118,67 +114,6 @@ func handleMsgEditPost(ctx sdk.Context, keeper Keeper, msg types.MsgEditPost) (*
 	result := sdk.Result{
 		Data:   keeper.Cdc.MustMarshalBinaryLengthPrefixed(existing.PostID),
 		Events: sdk.Events{editEvent},
-	}
-	return &result, nil
-}
-
-// handleMsgAddPostReaction handles the adding of a reaction to a post
-func handleMsgAddPostReaction(ctx sdk.Context, keeper Keeper, msg types.MsgAddPostReaction) (*sdk.Result, error) {
-
-	// Get the post
-	post, found := keeper.GetPost(ctx, msg.PostID)
-	if !found {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("post with id %s not found", msg.PostID))
-	}
-
-	// Create and store the reaction
-	reaction := types.NewReaction(msg.Value, msg.User)
-	if err := keeper.SaveReaction(ctx, post.PostID, reaction); err != nil {
-		return nil, err
-	}
-
-	// Emit the event
-	event := sdk.NewEvent(
-		types.EventTypeReactionAdded,
-		sdk.NewAttribute(types.AttributeKeyPostID, msg.PostID.String()),
-		sdk.NewAttribute(types.AttributeKeyReactionOwner, msg.User.String()),
-		sdk.NewAttribute(types.AttributeKeyReactionValue, msg.Value),
-	)
-	ctx.EventManager().EmitEvent(event)
-
-	result := sdk.Result{
-		Data:   []byte("reaction added properly"),
-		Events: sdk.Events{event},
-	}
-	return &result, nil
-}
-
-// handleMsgRemovePostReaction handles the removal of a reaction from a post
-func handleMsgRemovePostReaction(ctx sdk.Context, keeper Keeper, msg types.MsgRemovePostReaction) (*sdk.Result, error) {
-
-	// Get the post
-	post, found := keeper.GetPost(ctx, msg.PostID)
-	if !found {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("post with id %s not found", msg.PostID))
-	}
-
-	// Remove the reaction
-	if err := keeper.RemoveReaction(ctx, post.PostID, msg.User, msg.Reaction); err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
-	}
-
-	// Emit the event
-	event := sdk.NewEvent(
-		types.EventTypePostReactionRemoved,
-		sdk.NewAttribute(types.AttributeKeyPostID, msg.PostID.String()),
-		sdk.NewAttribute(types.AttributeKeyReactionOwner, msg.User.String()),
-		sdk.NewAttribute(types.AttributeKeyReactionValue, msg.Reaction),
-	)
-	ctx.EventManager().EmitEvent(event)
-
-	result := sdk.Result{
-		Data:   []byte("reaction removed properly"),
-		Events: sdk.Events{event},
 	}
 	return &result, nil
 }
