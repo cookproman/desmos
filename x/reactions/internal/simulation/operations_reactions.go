@@ -1,6 +1,9 @@
 package simulation
 
 import (
+	"github.com/desmos-labs/desmos/x/posts"
+	"github.com/desmos-labs/desmos/x/reactions/internal/keeper"
+	"github.com/desmos-labs/desmos/x/reactions/internal/types"
 	"math/rand"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -8,20 +11,18 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	sim "github.com/cosmos/cosmos-sdk/x/simulation"
-	"github.com/desmos-labs/desmos/x/posts/internal/keeper"
-	"github.com/desmos-labs/desmos/x/posts/internal/types"
 	"github.com/tendermint/tendermint/crypto"
 )
 
 // SimulateMsgAddReaction tests and runs a single msg add reaction where the reacting user account already exists
 // nolint: funlen
-func SimulateMsgAddReaction(k keeper.Keeper, ak auth.AccountKeeper) sim.Operation {
+func SimulateMsgAddReaction(k keeper.Keeper, ak auth.AccountKeeper, postsK posts.Keeper) sim.Operation {
 	return func(
 		r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context,
 		accs []sim.Account, chainID string,
 	) (sim.OperationMsg, []sim.FutureOperation, error) {
 
-		data, skip, err := randomAddReactionFields(r, ctx, accs, k, ak)
+		data, skip, err := randomAddReactionFields(r, ctx, accs, k, ak, postsK)
 		if err != nil {
 			return sim.NoOpMsg(types.ModuleName), nil, err
 		}
@@ -74,10 +75,10 @@ func sendMsgAddReaction(
 
 // randomAddReactionFields returns the data used to create a MsgAddReaction message
 func randomAddReactionFields(
-	r *rand.Rand, ctx sdk.Context, accs []sim.Account, k keeper.Keeper, ak auth.AccountKeeper,
+	r *rand.Rand, ctx sdk.Context, accs []sim.Account, k keeper.Keeper, ak auth.AccountKeeper, postsK posts.Keeper,
 ) (*ReactionData, bool, error) {
 
-	reactionData := RandomReactionData(r, accs, k.GetPosts(ctx))
+	reactionData := RandomReactionData(r, accs, postsK.GetPosts(ctx))
 	acc := ak.GetAccount(ctx, reactionData.User.Address)
 
 	// Skip the operation without error as the account is not valid
@@ -87,7 +88,7 @@ func randomAddReactionFields(
 
 	// Skip if the reaction already exists
 	reactions := k.GetPostReactions(ctx, reactionData.PostID)
-	if reactions.ContainsReactionFrom(reactionData.User.Address, reactionData.Value) {
+	if reactions.ContainsPostReactionFrom(reactionData.User.Address, reactionData.Value) {
 		return nil, true, nil
 	}
 
@@ -155,10 +156,10 @@ func sendMsgRemoveReaction(
 
 // randomReactionFields returns the data used to create a MsgAddReaction message
 func randomRemoveReactionFields(
-	r *rand.Rand, ctx sdk.Context, accs []sim.Account, k keeper.Keeper, ak auth.AccountKeeper,
+	r *rand.Rand, ctx sdk.Context, accs []sim.Account, k keeper.Keeper, ak auth.AccountKeeper, postsK posts.Keeper,
 ) (*ReactionData, bool, error) {
 
-	post, _ := RandomPost(r, k.GetPosts(ctx))
+	post, _ := posts.RandomPost(r, postsK.GetPosts(ctx))
 
 	reactions := k.GetPostReactions(ctx, post.PostID)
 

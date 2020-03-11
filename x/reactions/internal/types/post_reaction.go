@@ -18,8 +18,8 @@ type PostReaction struct {
 	Value string         `json:"value"` // PostReaction of the reaction
 }
 
-// NewReaction returns a new PostReaction
-func NewReaction(value string, owner sdk.AccAddress) PostReaction {
+// NewPostReaction returns a new PostReaction
+func NewPostReaction(value string, owner sdk.AccAddress) PostReaction {
 	return PostReaction{
 		Value: value,
 		Owner: owner,
@@ -73,9 +73,9 @@ func (reactions PostReactions) AppendIfMissing(other PostReaction) (PostReaction
 	return append(reactions, other), true
 }
 
-// ContainsReactionFrom returns true if the reactions slice contain
+// ContainsPostReactionFrom returns true if the reactions slice contain
 // a reaction from the given user having the given value, false otherwise
-func (reactions PostReactions) ContainsReactionFrom(user sdk.Address, value string) bool {
+func (reactions PostReactions) ContainsPostReactionFrom(user sdk.Address, value string) bool {
 	return reactions.IndexOfByUserAndValue(user, value) != -1
 }
 
@@ -90,11 +90,11 @@ func (reactions PostReactions) IndexOfByUserAndValue(owner sdk.Address, value st
 	return -1
 }
 
-// RemoveReaction returns a new PostReactions slice not containing the
+// RemovePostReaction returns a new PostReactions slice not containing the
 // reaction of the given user with the given value.
 // If the reaction was removed properly, true is also returned. Otherwise,
 // if no reaction was found, false is returned instead.
-func (reactions PostReactions) RemoveReaction(user sdk.Address, value string) (PostReactions, bool) {
+func (reactions PostReactions) RemovePostReaction(user sdk.Address, value string) (PostReactions, bool) {
 	index := reactions.IndexOfByUserAndValue(user, value)
 	if index == -1 {
 		return reactions, false

@@ -37,7 +37,6 @@ var (
 		"e1ba4807a15d8579f79cfd90a07fc015e6125565c9271eb94aded0b2ebf86163",
 		"3f40462915a3e6026a4d790127b95ded4d870f6ab18d9af2fcbc454168255237",
 	}
-	reactsValues = []string{"💙", "⬇️", "👎", "like"}
 )
 
 // RandomAcc picks and returns a random post from an array and returns its
@@ -73,27 +72,6 @@ func RandomPostData(r *rand.Rand, accs []sim.Account) PostData {
 		Medias:         RandomMedias(r),
 		PollData:       RandomPollData(r),
 	}
-}
-
-// ReactionData contains all the data needed for a reaction to be properly added or removed from a post
-type ReactionData struct {
-	Value  string
-	User   sim.Account
-	PostID types.PostID
-}
-
-// RandomReactionData returns a randomly generated reaction data object
-func RandomReactionData(r *rand.Rand, accs []sim.Account, posts []types.Post) ReactionData {
-	return ReactionData{
-		Value:  RandomReactionValue(r),
-		User:   accs[r.Intn(len(accs))],
-		PostID: RandomPostID(r, posts),
-	}
-}
-
-// RandomReactionValue returns a random reaction value
-func RandomReactionValue(r *rand.Rand) string {
-	return reactsValues[r.Intn(len(reactsValues))]
 }
 
 // RandomPostID returns a randomly extracted post id from the list of posts given

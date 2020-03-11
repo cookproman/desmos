@@ -3,11 +3,8 @@ package simulation
 // DONTCOVER
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/desmos-labs/desmos/x/posts/internal/types"
-	types2 "github.com/desmos-labs/desmos/x/reactions/internal/types"
-	"github.com/tendermint/tendermint/crypto/ed25519"
 )
 
 var (
@@ -18,8 +15,7 @@ var (
 // RandomizedGenState generates a random GenesisState for auth
 func RandomizedGenState(simState *module.SimulationState) {
 	posts := randomPosts(simState)
-	reactions := randomReactions(simState, posts)
-	postsGenesis := types.NewGenesisState(posts, reactions)
+	postsGenesis := types.NewGenesisState(posts)
 	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(postsGenesis)
 }
 
@@ -50,23 +46,4 @@ func randomPosts(simState *module.SimulationState) (posts types.Posts) {
 	}
 
 	return posts
-}
-
-// randomReactions returns a randomly generated list of reactions
-func randomReactions(simState *module.SimulationState, posts types.Posts) (reactionsMap map[string]types2.Reactions) {
-	reactionsNumber := simState.Rand.Intn(len(posts))
-
-	reactionsMap = make(map[string]types2.Reactions, reactionsNumber)
-	for i := 0; i < reactionsNumber; i++ {
-		reactionsLen := simState.Rand.Intn(20)
-		reactions := make(types2.Reactions, reactionsLen)
-		for j := 0; j < reactionsLen; j++ {
-			privKey := ed25519.GenPrivKey().PubKey()
-			reactions[j] = types2.NewReaction(RandomReactionValue(simState.Rand), sdk.AccAddress(privKey.Address()))
-		}
-
-		reactionsMap[RandomPostID(simState.Rand, posts).String()] = reactions
-	}
-
-	return reactionsMap
 }

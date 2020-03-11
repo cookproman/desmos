@@ -30,29 +30,29 @@ func TestKeeper_SaveReaction(t *testing.T) {
 	}{
 		{
 			name:           "PostReaction from same user already present returns expError",
-			storedLikes:    types.PostReactions{types.NewReaction("like", liker)},
+			storedLikes:    types.PostReactions{types.NewPostReaction("like", liker)},
 			postID:         posts.PostID(10),
-			like:           types.NewReaction("like", liker),
+			like:           types.NewPostReaction("like", liker),
 			error:          fmt.Errorf("cosmos1s3nh6tafl4amaxkke9kdejhp09lk93g9ev39r4 has already reacted with like to the post with id 10"),
-			expectedStored: types.PostReactions{types.NewReaction("like", liker)},
+			expectedStored: types.PostReactions{types.NewPostReaction("like", liker)},
 		},
 		{
 			name:           "First liker is stored properly",
 			storedLikes:    types.PostReactions{},
 			postID:         posts.PostID(15),
-			like:           types.NewReaction("like", liker),
+			like:           types.NewPostReaction("like", liker),
 			error:          nil,
-			expectedStored: types.PostReactions{types.NewReaction("like", liker)},
+			expectedStored: types.PostReactions{types.NewPostReaction("like", liker)},
 		},
 		{
 			name:        "Second liker is stored properly",
-			storedLikes: types.PostReactions{types.NewReaction("like", liker)},
+			storedLikes: types.PostReactions{types.NewPostReaction("like", liker)},
 			postID:      posts.PostID(87),
-			like:        types.NewReaction("like", otherLiker),
+			like:        types.NewPostReaction("like", otherLiker),
 			error:       nil,
 			expectedStored: types.PostReactions{
-				types.NewReaction("like", liker),
-				types.NewReaction("like", otherLiker),
+				types.NewPostReaction("like", liker),
+				types.NewPostReaction("like", otherLiker),
 			},
 		},
 	}
@@ -92,7 +92,7 @@ func TestKeeper_RemoveReaction(t *testing.T) {
 	}{
 		{
 			name:           "PostReaction from same liker is removed properly",
-			storedLikes:    types.PostReactions{types.NewReaction("like", liker)},
+			storedLikes:    types.PostReactions{types.NewPostReaction("like", liker)},
 			postID:         posts.PostID(10),
 			liker:          liker,
 			value:          "like",
@@ -110,12 +110,12 @@ func TestKeeper_RemoveReaction(t *testing.T) {
 		},
 		{
 			name:           "Non existing reaction returns error - Value",
-			storedLikes:    types.PostReactions{types.NewReaction("like", liker)},
+			storedLikes:    types.PostReactions{types.NewPostReaction("like", liker)},
 			postID:         posts.PostID(15),
 			liker:          liker,
 			value:          "reaction",
 			error:          fmt.Errorf("cannot remove the reaction with value reaction from user cosmos1s3nh6tafl4amaxkke9kdejhp09lk93g9ev39r4 as it does not exist"),
-			expectedStored: types.PostReactions{types.NewReaction("like", liker)},
+			expectedStored: types.PostReactions{types.NewPostReaction("like", liker)},
 		},
 	}
 
@@ -163,8 +163,8 @@ func TestKeeper_GetPostLikes(t *testing.T) {
 		{
 			name: "Valid list of likes is returned properly",
 			likes: types.PostReactions{
-				types.NewReaction("like", otherLiker),
-				types.NewReaction("like", liker),
+				types.NewPostReaction("like", otherLiker),
+				types.NewPostReaction("like", liker),
 			},
 		},
 	}
@@ -208,11 +208,11 @@ func TestKeeper_GetLikes(t *testing.T) {
 			name: "Non empty likes data are returned correcly",
 			likes: map[posts.PostID]types.PostReactions{
 				posts.PostID(5): {
-					types.NewReaction("like", liker1),
-					types.NewReaction("like", liker2),
+					types.NewPostReaction("like", liker1),
+					types.NewPostReaction("like", liker2),
 				},
 				posts.PostID(10): {
-					types.NewReaction("like", liker1),
+					types.NewPostReaction("like", liker1),
 				},
 			},
 		},

@@ -36,7 +36,7 @@ func handleMsgAddPostReaction(ctx sdk.Context, postKeeper posts.Keeper, keeper K
 	}
 
 	// Create and store the reaction
-	reaction := types.NewReaction(msg.Value, msg.User)
+	reaction := types.NewPostReaction(msg.Value, msg.User)
 	if err := keeper.SaveReaction(ctx, post.PostID, reaction); err != nil {
 		return nil, err
 	}

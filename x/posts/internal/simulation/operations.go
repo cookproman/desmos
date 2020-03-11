@@ -12,11 +12,9 @@ import (
 
 // Simulation operation weights constants
 const (
-	OpWeightMsgCreatePost     = "op_weight_msg_create_post"
-	OpWeightMsgEditPost       = "op_weight_msg_edit_post"
-	OpWeightMsgAddReaction    = "op_weight_msg_add_reaction"
-	OpWeightMsgRemoveReaction = "op_weight_msg_remove_reaction"
-	OpWeightMsgAnswerPoll     = "op_weight_msg_answer_poll"
+	OpWeightMsgCreatePost = "op_weight_msg_create_post"
+	OpWeightMsgEditPost   = "op_weight_msg_edit_post"
+	OpWeightMsgAnswerPoll = "op_weight_msg_answer_poll"
 
 	DefaultGasValue = 5000000
 )
@@ -38,20 +36,6 @@ func WeightedOperations(appParams sim.AppParams, cdc *codec.Codec, k keeper.Keep
 		},
 	)
 
-	var weightMsgAddReaction int
-	appParams.GetOrGenerate(cdc, OpWeightMsgAddReaction, &weightMsgAddReaction, nil,
-		func(_ *rand.Rand) {
-			weightMsgAddReaction = params.DefaultWeightMsgAddReaction
-		},
-	)
-
-	var weightMsgRemoveReaction int
-	appParams.GetOrGenerate(cdc, OpWeightMsgRemoveReaction, &weightMsgRemoveReaction, nil,
-		func(_ *rand.Rand) {
-			weightMsgRemoveReaction = params.DefaultWeightMsgRemoveReaction
-		},
-	)
-
 	var weightMsgAnswerPoll int
 	appParams.GetOrGenerate(cdc, OpWeightMsgAnswerPoll, &weightMsgAnswerPoll, nil,
 		func(_ *rand.Rand) {
@@ -67,14 +51,6 @@ func WeightedOperations(appParams sim.AppParams, cdc *codec.Codec, k keeper.Keep
 		sim.NewWeightedOperation(
 			weightMsgEditPost,
 			SimulateMsgEditPost(k, ak),
-		),
-		sim.NewWeightedOperation(
-			weightMsgAddReaction,
-			SimulateMsgAddReaction(k, ak),
-		),
-		sim.NewWeightedOperation(
-			weightMsgRemoveReaction,
-			SimulateMsgRemoveReaction(k, ak),
 		),
 		sim.NewWeightedOperation(
 			weightMsgAnswerPoll,

@@ -44,7 +44,7 @@ func (k Keeper) SaveReaction(ctx sdk.Context, postID posts.PostID, reaction type
 	k.Cdc.MustUnmarshalBinaryBare(store.Get(key), &reactions)
 
 	// Check for double reactions
-	if reactions.ContainsReactionFrom(reaction.Owner, reaction.Value) {
+	if reactions.ContainsPostReactionFrom(reaction.Owner, reaction.Value) {
 		return fmt.Errorf("%s has already reacted with %s to the post with id %s",
 			reaction.Owner, reaction.Value, postID)
 	}
@@ -56,7 +56,7 @@ func (k Keeper) SaveReaction(ctx sdk.Context, postID posts.PostID, reaction type
 	return nil
 }
 
-// RemoveReaction removes the reaction from the given user from the post having the
+// RemovePostReaction removes the reaction from the given user from the post having the
 // given postID. If no reaction with the same value was previously added from the given user, an expError
 // is returned.
 // nolint: interfacer
@@ -69,13 +69,13 @@ func (k Keeper) RemoveReaction(ctx sdk.Context, postID posts.PostID, user sdk.Ac
 	k.Cdc.MustUnmarshalBinaryBare(store.Get(key), &reactions)
 
 	// Check if the user exists
-	if !reactions.ContainsReactionFrom(user, value) {
+	if !reactions.ContainsPostReactionFrom(user, value) {
 		return fmt.Errorf("cannot remove the reaction with value %s from user %s as it does not exist",
 			value, user)
 	}
 
 	// Remove and save the reactions list
-	if newLikes, edited := reactions.RemoveReaction(user, value); edited {
+	if newLikes, edited := reactions.RemovePostReaction(user, value); edited {
 		if len(newLikes) == 0 {
 			store.Delete(key)
 		} else {

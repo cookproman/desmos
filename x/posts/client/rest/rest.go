@@ -28,20 +28,6 @@ type CreatePostReq struct {
 	PollData       *types.PollData   `json:"poll_data,omitempty"`
 }
 
-// AddReactionReq defines the properties of a reaction adding request's body.
-type AddReactionReq struct {
-	BaseReq  rest.BaseReq `json:"base_req"`
-	PostID   string       `json:"post_id"`
-	Reaction string       `json:"reaction"`
-}
-
-// RemoveReactionReq defines the properties of a reaction removal request's body.
-type RemoveReactionReq struct {
-	BaseReq  rest.BaseReq `json:"base_req"`
-	PostID   string       `json:"post_id"`
-	Reaction string       `json:"reaction"`
-}
-
 type AnswerPollPostReq struct {
 	BaseReq rest.BaseReq `json:"base_req"`
 	Answers []string     `json:"answers"`

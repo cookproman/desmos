@@ -29,13 +29,22 @@ var (
 	NewUserAnswer       = types.NewUserAnswer
 	DefaultGenesisState = types.DefaultGenesisState
 	ValidateGenesis     = types.ValidateGenesis
-	DecodeStore         = simulation.DecodeStore
-	RandomizedGenState  = simulation.RandomizedGenState
 	WeightedOperations  = simulation.WeightedOperations
 	NewMsgCreatePost    = types.NewMsgCreatePost
 	NewMsgEditPost      = types.NewMsgEditPost
 
+	DecodeStore        = simulation.DecodeStore
+	RandomizedGenState = simulation.RandomizedGenState
+	RandomPost         = simulation.RandomPost
+	RandomPostData     = simulation.RandomPostData
+	RandomPostID       = simulation.RandomPostID
+	RandomMessage      = simulation.RandomMessage
+	RandomSubspace     = simulation.RandomSubspace
+	RandomMedias       = simulation.RandomMedias
+	RandomPollData     = simulation.RandomPollData
+
 	AttributeKeyPostID = types.AttributeKeyPostID
+	PostStoreKey       = types.PostStoreKey
 )
 
 type (
@@ -46,6 +55,7 @@ type (
 	Posts       = types.Posts
 	PostMedia   = types.PostMedia
 	PostMedias  = types.PostMedias
+	PollData    = types.PollData
 	AnswerID    = types.AnswerID
 	UserAnswer  = types.UserAnswer
 	UserAnswers = types.UserAnswers
@@ -56,4 +66,6 @@ type (
 	MsgEditPost       = types.MsgEditPost
 	MsgAnswerPoll     = types.MsgAnswerPoll
 	QueryPostsParams  = types.QueryPostsParams
+
+	PostData = simulation.PostData
 )

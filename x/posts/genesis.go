@@ -7,26 +7,6 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 )
 
-func convertReactionsMap(reactions map[PostID]Reactions) map[string]Reactions {
-	reactionsMap := make(map[string]Reactions, len(reactions))
-	for key, value := range reactions {
-		reactionsMap[key.String()] = value
-	}
-	return reactionsMap
-}
-
-func convertGenesisReactions(reactions map[string]Reactions) map[PostID]Reactions {
-	reactionsMap := make(map[PostID]Reactions, len(reactions))
-	for key, value := range reactions {
-		postID, err := ParsePostID(key)
-		if err != nil {
-			panic(err)
-		}
-		reactionsMap[postID] = value
-	}
-	return reactionsMap
-}
-
 func convertPostPollAnswersMap(answers map[PostID]UserAnswers) map[string]UserAnswers {
 	answersMap := make(map[string]UserAnswers, len(answers))
 	for key, value := range answers {
@@ -52,7 +32,6 @@ func ExportGenesis(ctx sdk.Context, k Keeper) GenesisState {
 	return GenesisState{
 		Posts:       k.GetPosts(ctx),
 		PollAnswers: convertPostPollAnswersMap(k.GetPollAnswersMap(ctx)),
-		Reactions:   convertReactionsMap(k.GetReactions(ctx)),
 	}
 }
 
@@ -70,15 +49,5 @@ func InitGenesis(ctx sdk.Context, keeper Keeper, data GenesisState) []abci.Valid
 			keeper.SavePollAnswers(ctx, postID, userAnswersDetails)
 		}
 	}
-
-	reactionsMap := convertGenesisReactions(data.Reactions)
-	for postID, reactions := range reactionsMap {
-		for _, reaction := range reactions {
-			if err := keeper.SaveReaction(ctx, postID, reaction); err != nil {
-				panic(err)
-			}
-		}
-	}
-
 	return []abci.ValidatorUpdate{}
 }

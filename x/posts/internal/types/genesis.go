@@ -1,19 +1,15 @@
 package types
 
-import "github.com/desmos-labs/desmos/x/reactions/internal/types"
-
 // GenesisState contains the data of the genesis state for the posts module
 type GenesisState struct {
-	Posts       Posts                      `json:"posts"`
-	PollAnswers map[string]UserAnswers     `json:"poll_answers_details"`
-	Reactions   map[string]types.Reactions `json:"reactions"`
+	Posts       Posts                  `json:"posts"`
+	PollAnswers map[string]UserAnswers `json:"poll_answers_details"`
 }
 
 // NewGenesisState creates a new genesis state
-func NewGenesisState(posts Posts, reactions map[string]types.Reactions) GenesisState {
+func NewGenesisState(posts Posts) GenesisState {
 	return GenesisState{
-		Posts:     posts,
-		Reactions: reactions,
+		Posts: posts,
 	}
 }
 
@@ -37,14 +33,5 @@ func ValidateGenesis(data GenesisState) error {
 			}
 		}
 	}
-
-	for _, reactions := range data.Reactions {
-		for _, record := range reactions {
-			if err := record.Validate(); err != nil {
-				return err
-			}
-		}
-	}
-
 	return nil
 }

@@ -19,7 +19,7 @@ const (
 var (
 	ReactionRegEx = regexp.MustCompile("")
 
-	PostReactionsStorePrefix = []byte("reactions")
+	PostReactionsStorePrefix = []byte("post_reactions")
 )
 
 // PostCommentsStoreKey turns an id to a key used to store a post's reactions into the posts store

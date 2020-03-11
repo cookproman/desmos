@@ -58,12 +58,12 @@ func Test_handleMsgAddPostReaction(t *testing.T) {
 				))
 
 				var storedPost posts.Post
-				k.Cdc.MustUnmarshalBinaryBare(store.Get(types.PostStoreKey(testPost.PostID)), &storedPost)
+				k.Cdc.MustUnmarshalBinaryBare(store.Get(posts.PostStoreKey(testPost.PostID)), &storedPost)
 				require.True(t, test.existingPost.Equals(storedPost))
 
 				var storedReactions types.PostReactions
 				k.Cdc.MustUnmarshalBinaryBare(store.Get(types.PostReactionsStoreKey(storedPost.PostID)), &storedReactions)
-				require.Contains(t, storedReactions, types.NewReaction(test.msg.Value, test.msg.User))
+				require.Contains(t, storedReactions, types.NewPostReaction(test.msg.Value, test.msg.User))
 			}
 
 			// Invalid response
@@ -79,7 +79,7 @@ func Test_handleMsgRemovePostReaction(t *testing.T) {
 	user, err := sdk.AccAddressFromBech32("cosmos1q4hx350dh0843wr3csctxr87at3zcvd9qehqvg")
 	require.NoError(t, err)
 
-	reaction := types.NewReaction("like", user)
+	reaction := types.NewPostReaction("like", user)
 	tests := []struct {
 		name             string
 		existingPost     *posts.Post
@@ -114,7 +114,7 @@ func Test_handleMsgRemovePostReaction(t *testing.T) {
 
 			store := ctx.KVStore(k.StoreKey)
 			if test.existingPost != nil {
-				store.Set(types.PostStoreKey(test.existingPost.PostID), k.Cdc.MustMarshalBinaryBare(&test.existingPost))
+				store.Set(posts.PostStoreKey(test.existingPost.PostID), k.Cdc.MustMarshalBinaryBare(&test.existingPost))
 			}
 
 			if test.existingReaction != nil {
@@ -137,7 +137,7 @@ func Test_handleMsgRemovePostReaction(t *testing.T) {
 				))
 
 				var storedPost posts.Post
-				k.Cdc.MustUnmarshalBinaryBare(store.Get(types.PostStoreKey(testPost.PostID)), &storedPost)
+				k.Cdc.MustUnmarshalBinaryBare(store.Get(posts.PostStoreKey(testPost.PostID)), &storedPost)
 				require.True(t, test.existingPost.Equals(storedPost))
 
 				var storedReactions types.PostReactions
